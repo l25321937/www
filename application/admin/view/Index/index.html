@@ -1,6 +1,8 @@
 {include file="public/_meta"}
 {include file="public/_header"}
 {include file="public/_menu"}
+
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
 <section class="Hui-article-box">
     <div id="Hui-tabNav" class="Hui-tabNav hidden-xs">
         <div class="Hui-tabNav-wp">
@@ -26,7 +28,9 @@
         <li id="closeall">关闭全部 </li>
     </ul>
 </div>
-{file include="public/_footer"}
+<!--_footer 作为公共模版分离出去-->
+{include file="public/_footer"}
+<!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="__STATIC__/hadmin/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
