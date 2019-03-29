@@ -25,3 +25,4 @@ function show($status, $message ,$data=[], $httpCode=200){
     ];
     return json($result,$httpCode);
 };
+
