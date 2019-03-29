@@ -26,8 +26,12 @@ class Test extends Controller{
     }
 
     public function save(){
-        if($data['ids']){
-            echo 1;exit;
+//        if($data['ids']){
+//            echo 1;exit;
+//        }
+        $data =input('post.');
+        if($data['mt']!=1){
+            throw new \app\common\lib\exception\ApiException('您提交的数据不合法',400);
         }
         return show(1,'ok',input('post.'),201);
     }
