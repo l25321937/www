@@ -1,76 +1,235 @@
 <!--header-->
 {include file="public/_meta" title="娱乐资讯"/}
-<>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 资讯管理 <span class="c-gray en">&gt;</span> 资讯列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
-<div class="page-container">
-  <div class="text-c">
-    <form action="" method="get">
-   <span class="select-box inline">
-    <select name="catid" class="select">
-          <option value="0">全部分类</option>
-
-          <option value="" ></option>
-
-        </select>
-    </span> 日期范围：
-      <input type="text" name="start_time" class="input-text" id="countTimestart" onfocus="selecttime(1)" value="" style="width:120px;" >
-      -
-      <input type="text" name="end_time" class="input-text" id="countTimestart" onfocus="selecttime(1)" value=""  style="width:120px;">
-
-      <input type="text" name="title" id="" value="" placeholder=" 资讯名称" style="width:250px" class="input-text">
-      <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜资讯</button>
-    </form>
-  </div>
-
-  <div class="mt-20">
-    <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive" >
-      <thead>
-      <tr class="text-c">
-        <th width="25"><input type="checkbox" name="" value=""></th>
-        <th width="80">ID</th>
-        <th>标题</th>
-        <th width="80">分类</th>
-        <th width="80">缩图</th>
-        <th width="120">更新时间</th>
-        <th width="40">是否推荐</th>
-        <th width="60">发布状态</th>
-        <th width="120">操作</th>
-      </tr>
-      </thead>
-      <tbody>
-
-      <tr class="text-c">
-        <td><input type="checkbox" value="" name=""></td>
-        <td></td>
-        <td class="text-l"><u style="cursor:pointer" class="text-primary"  title="查看"></u></td>
-        <td></td>
-        <td><img width="60" height="60" class="picture-thumb" src=""></td>
-        <td></td>
-        <td></td>
-        <td class="td-status"></td>
-        <td class="f-14 td-manage"> <a style="text-decoration:none" class="ml-5" onClick="article_edit('资讯编辑','article-add.html','10001')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> <a style="text-decoration:none" class="ml-5" onClick="" href="javascript:;" title="删除" del_url=""><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-      </tr>
-
-      </tbody>
-    </table>
-    <div id="laypage"></div>
-  </div>
-
-</div>
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css" />
+<link rel="stylesheet" href="__STATIC__/datetimepicker/bootstrap-datetimepicker.min.css">
 <!--header-->
-{include file="public/_footer" /}
+<div style="margin-left:auto; margin-right:auto;width: 95%;margin-top: 2%;text-align: center;">
+    <table>
+       <span class="select-box inline" style="margin-right:20px; ">
+        <select name="catid" class="select" id="catid" >
+              <option value="0">全部栏目</option>
+        </select>
+        </span> 日期范围：
+      <input type="text" name="start_time" class="input-text"   value="" style="width:140px;" >
+      -
+      <input type="text" name="end_time" class="input-text"   value=""  style="width:140px;">
 
+      <input type="text" name="keyword"  value="" placeholder=" 资讯名称" style="width:250px;margin-left: 5px;" class="input-text">
+      <button name="" id="search" class="btn btn-success" type="submit" style="margin-left: 5px;"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </table>
+</div>
+
+<div style="margin-left:auto; margin-right:auto;width:95%;margin-top:2%">
+<table id="newsTable" class="table table-striped table-bordered" style="width:100%;" >
+  <thead>
+    <tr>
+
+    </tr>
+  </thead>
+  <tbody>
+    <tr></tr>
+  </tbody>
+  <tfoot>
+  <tr></tr>
+  </tfoot>
+</table>
+</div>
+</body>
+{include file="public/_footer" /}
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="__STATIC__/hadmin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/laypage/1.2/laypage.js"></script>
-<script type="text/javascript">
+<script src="__STATIC__/datetimepicker/bootstrap-datetimepicker.min.js"></script>
+
+<script src="__STATIC__/datetimepicker/bootstrap-datetimepicker.zh-CN.js"></script>
+<script>
+
+    $(function () {
+        //初始化datetimepicker插件
+        $("input[name='start_time'],input[name='end_time']").datetimepicker({
+            format:'yyyy-mm-dd hh:ii',
+            todayBtn: true,
+            //不加的话会导致日期插件的箭头图标不显示
+            bootcssVer:3,
+            language:'zh-CN',
+        });
+
+
+        //获取栏目数据
+        $.ajax({
+            "type":"get",
+            "url":"/admin/category/getCategoryList",
+            "success":function(data){
+               result=JSON.parse(data).result;
+               // console.log(result);
+                $(result).each(function(index,item){
+                    $("#catid").append("<option value='"+(index+1)+"'>"+item+"</option>");
+                });
+            }
+        });
+
+
+
+        //表格设置
+        var table=$('#newsTable').DataTable({
+            //是否添加搜索功能
+            "searching": false,
+            //是否分页
+            "paging": true,
+            //分页样式
+            "pagingType":"full_numbers",
+            //分页长度
+            "iDisplayLength": 10,
+            // 是否开启表格左下的信息展示
+            "info": true,
+            // 是否排序
+            "ordering": false,
+            // ajax请求地址
+            "ajax": {
+                "url":'/admin/news/getnews',
+            },
+            // 延迟渲染数据
+            "deferRender": true,
+            "language":{
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+            },
+            //表头数据
+            "columns": [
+                {"data": "id", "title": "序号"},
+                {"data": "title", "title": "文章标题"},
+                {"data": "small_title", "title": "简略标题"},
+                {"data": "catid", "title": "栏目"},
+                {"data": "image","title": "图片"},
+                {"data": "create_time","title": "创建时间"},
+                {"data": "update_time","title": "更新时间"},
+                {"data": "status","title": "状态"},
+                {"data": "option","title": "操作"},
+            ],
+            "columnDefs":[
+                {
+                    "render":
+                        function(data,type,row){
+                            if(data){
+                                return "<img src='http://"+data+"?imageView2/1/w/50/h/50'/>";
+                            }else{
+                                return "没有图片";
+                        }
+                    },
+                    "targets":4,
+                },
+                {
+                    "render":
+                        function(data,type,row){
+                            return result[data-1];
+                        },
+                    "targets":3,
+                }
+            ],
+
+        });
+
+        //按条件搜索
+        $('#search').click(function() {
+            var catVal=$("#catid").val();
+            var startTime =$("input[name='start_time']").val();
+            var endTime =$("input[name='end_time']").val();
+            var keyword=$("input[name='keyword']").val();
+            $.ajax({
+                "url":"/admin/news/searchNews",
+                "type":"get",
+                "data":{'catid':catVal,'startTime':startTime,'endTime':endTime,'keyword':keyword},
+                "success":function(data){
+                    table.clear();
+                    table.rows.add(JSON.parse(data)).draw();
+                },
+            });
+        } );
+
+        //ajax删除新闻
+        //因为表格是动态获取数据，后面的代码中无法获取到创建的节点，因此要用on语句
+        $("body").on("click","button[name='del']",function(){
+            // console.log($(this).val());
+            var obj=$(this);
+            layer.open({
+                type:0,
+                title:'提示',
+                area:['300px','200px'],
+                icon:3,
+                content:'确认删除吗？',
+                btn:['确认','取消'],
+                btn1:function () {
+                    // console.log(obj);
+                    // alert(123);
+                    $.ajax({
+                        "type":"get",
+                        "url":"/admin/news/delNew",
+                        "data":{'id':obj.val()},
+                        "success":function (data) {
+                            if(JSON.parse(data).code==200){
+                                // console.log(obj);
+                                $(obj).parent().parent().parent().remove();
+                                layer.msg('删除成功');
+                            }
+                        },
+                        "yes": function(index){
+                            parent.layer.close(index);
+                        },
+                    });
+
+                },
+
+            });
+
+        });
+    });
+
+    $("body").on('click',"button[name='status']",function(){
+        // console.log($(this)[0]);
+        var obj=$(this);
+        layer.open({
+            type:0,
+            title:'提示',
+            area:['300px','200px'],
+            icon:7,
+            content:(obj.val()==1)?'确认切换为待审状态吗？':'确认切换为已通过状态吗？',
+            btn1:function(){
+                $.ajax({
+                    "type":"get",
+                    "url":"/admin/news/switchStatus",
+                    "data":{'status':obj.val(),'id':obj.attr('data')},
+                    "success":function(data){
+                        if(JSON.parse(data).code==200){
+                            if( obj.val()==1){
+                                   obj.attr('class','layui-btn layui-btn-xs layui-btn-normal')
+                                    .attr('value',0)
+                                    .html('待审核');
+                            }else{
+                                   obj.attr('class','layui-btn layui-btn-primary layui-btn-xs')
+                                    .attr('value',1)
+                                    .html('已发布');
+                            }
+
+
+                            layer.msg('切换成功');
+                        }
+                    },
+                    "yes":function(index){
+                        parent.layer.close(index);
+                    }
+
+                })
+            }
+        });
+    });
 
 
 </script>
-<style>
-  .imooc-app .pagination li{display:inline; padding-left:10px;}
-  .pagination .active{color:red}
-  .pagination .disabled{color:#888888}
-</style>
-</body>
 </html>

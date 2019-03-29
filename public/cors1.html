@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button onclick="sendGet()">点击发起一个简单的请求</button>
+
+</body>
+<script>
+    function sendGet() {
+        var xmlHttp = new XMLHttpRequest();
+        if(window.XMLHttpRequest){
+            xmlHttp = new XMLHttpRequest();
+        }else if(window.ActiveXObject){
+            xmlHttp = new ActiveXObject('microsoft.XMLHTTP');
+        }
+
+        xmlHttp.onreadystatechange = function(){
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                var data = xmlHttp.responseText;
+                alert(data);
+            }
+        };
+
+        xmlHttp.open('PUT','http://localhost:3000/3-6-2-cors-2-data');
+        xmlHttp.setRequestHeader('X-Our-Header','xdl');
+        xmlHttp.send();
+    }
+</script>
+
+</html>

@@ -29,4 +29,24 @@ class Base extends Controller
         return false;
     }
 
+    //更新状态逻辑
+    public function updateStatus($id, $status){
+        //验证id参数是否存在
+        if(!intval($id)){
+            return json_encode(['code'=>401,'message'=>'ID不合法']);
+        }
+
+        $model = $this->model ?? request()->controller();
+
+        try{
+            model($model)->changeStatus($id,$status);
+        }catch(\Exception $e){
+            return json_encode(['code'=>404,'message'=>'更新状态失败','result'=>$e->getMessage()]);
+        }
+        return true;
+    }
+
+
+
+
 }

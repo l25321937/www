@@ -1,26 +1,27 @@
 <!--header-->
 {include file="public/_meta" /}
+<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader-0.1.5/dist/webuploader.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css" />
 <article class="page-container">
-  <form class="form form-horizontal" id="form-singwaapp" url="">
+  <form class="form form-horizontal demoform" id="form-singwaapp" method="post" action="{:url('/admin/news/add')}">
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章标题：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <input type="text" class="input-text" value="" placeholder="" id="title" name="title">
+        <input type="text" class="input-text" datatype="s5-50" nullmsg="标题不能为空" errormsg="请输入5-50位字符的标题" sucmsg="标题可用" value="" placeholder="" id="title" name="title">
       </div>
     </div>
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2">简略标题：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <input type="text" class="input-text" value="" placeholder="" id="samll_title" name="small_title">
+        <input type="text" class="input-text" value="" ignore="ignore" placeholder="" id="samll_title" name="small_title">
       </div>
     </div>
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类栏目：</label>
       <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
-				<select name="catid" class="select">
-                 
-                  <option value=""></option>
-                  
+				<select name="catid" class="select" id="catid" >
+                      <option value=""></option>
+
                 </select>
 				</span> </div>
     </div>
@@ -28,8 +29,8 @@
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2">文章摘要：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <textarea name="description" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" ></textarea>
-        <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
+        <textarea name="description"  class="textarea" ignore="ignore" datatype="briefArt" ></textarea>
+        <p class="textarea-numberbar">
       </div>
     </div>
 
@@ -38,7 +39,7 @@
       <label class="form-label col-xs-4 col-sm-2">允许评论：</label>
       <div class="formControls col-xs-8 col-sm-9 skin-minimal">
         <div class="check-box">
-          <input type="checkbox" id="is_allowcomments" name="is_allowcomments" value="">
+          <input type="checkbox" id="is_allowcomments" name="is_allowcomments" value="1">
           <label for="checkbox-pinglun">&nbsp;</label>
         </div>
       </div>
@@ -47,7 +48,7 @@
       <label class="form-label col-xs-4 col-sm-2">是否推荐到首页头图：</label>
       <div class="formControls col-xs-8 col-sm-9 skin-minimal">
         <div class="check-box">
-          <input type="checkbox" id="is_head_figure" name="is_head_figure" value="">
+          <input type="checkbox" id="is_head_figure" name="is_head_figure" value="1">
           <label for="checkbox-pinglun">&nbsp;</label>
         </div>
       </div>
@@ -56,31 +57,35 @@
       <label class="form-label col-xs-4 col-sm-2">是否推荐：</label>
       <div class="formControls col-xs-8 col-sm-9 skin-minimal">
         <div class="check-box">
-          <input type="checkbox" id="is_position" name="is_position" value="">
+          <input type="checkbox" id="is_position" name="is_position" value="1" >
           <label for="checkbox-pinglun">&nbsp;</label>
         </div>
       </div>
     </div>
 
-    <div class="row cl">
-      <label class="form-label col-xs-4 col-sm-2">缩略图：</label>
-      <div class="formControls col-xs-8 col-sm-9">
-        <input id="file_upload"  type="file" multiple="true" >
-        <img style="display: none" id="upload_org_code_img" src="" width="150" height="150">
-        <input id="file_upload_image" name="image" type="hidden" multiple="true" value="">
+
+      <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-2" style="margin-right:17px; ">图片上传：</label>
+        <div id="uploader-demo">
+          <!--用来存放item-->
+          <div id="fileList" class="uploader-list"></div>
+          <div id="filePicker" onclick="changeStyle()" style="float: left;margin-right: 20px;"></div>
+          <div id="startSubmit" class="layui-btn layui-btn-normal" style="float: left;height: 39px;">开始上传</div>
+        </div>
       </div>
-    </div>
+
 
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2">文章内容：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <script id="editor" type="text/plain" name="content" style="width:100%;height:400px;"></script>
+            <script id="container" name="content" type="text/plain" style="width:1000px;height:300px;"></script>
       </div>
     </div>
     <div class="row cl">
       <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
-        <button  class="btn btn-secondary radius" type="submit"><i class="Hui-iconfont">&#xe632;</i> 保存</button>
-        <button onClick="removeIframe();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+          <input class="btn btn-secondary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" id="btn_sub">
+          <input class="btn btn-default radius" type="submit" value="&nbsp;&nbsp;重置&nbsp;&nbsp;" id="btn_reset">
+
       </div>
     </div>
   </form>
@@ -90,51 +95,113 @@
 {include file="public/_footer" /}
 
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="__STATIC__/hadmin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/ueditor/1.4.3/ueditor.config.js"></script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
-<script type="text/javascript" src="__STATIC__/hadmin/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+
+<script src="__STATIC__/utf8-php/ueditor.config.js"></script>
+<script src="__STATIC__/utf8-php/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__STATIC__/webuploader-0.1.5/dist/webuploader.js"></script>
+<script>var uploader_server="{:url('image/qiniuUpload')}"</script>
+<script type="text/javascript" src="__STATIC__/js/image.js"></script>
 <script type="text/javascript">
   $(function(){
-    $('.skin-minimal input').iCheck({
-      checkboxClass: 'icheckbox-blue',
-      radioClass: 'iradio-blue',
-      increaseArea: '20%'
-    });
+      //ajax获取栏目数据
 
-    //表单验证
-    $("#form-singwaapp").validate({
-      rules:{
-        title:{
-          required:true,
-        },
-        small_title:{
-          required:true,
-        },
-        catid:{
-          required:true,
-        },
-        sources_type:{
-          required:true,
-        },
-        is_allowcomments:{
-          required:true,
-        },
+          $.ajax({
+              type:'get',
+              url:'http://www.mooc.com/admin/category/getCategoryList',
+              success:function (data) {
+                      if(!$('.opt')[0]){
+                          var result=JSON.parse(data);
+                          $(result.result).each(function(index,item){
+                              $('#catid').append("<option value='"+(index+1)+"' class='opt'>"+item+"</option>")
+                          });
+                      }
 
-      },
-      onkeyup:false,
-      focusCleanup:true,
-      success:"valid",
-      submitHandler:function(form){
-        singwaapp_save(form);// 需要小伙伴自定义一个singwaapp_save方法 用来处理抛送请求的哦
-      }
-    });
+                  }
+                  // console.log($result.result);
+          });
 
-    var ue = UE.getEditor('editor');
+
+      //单选框样式
+      $('.skin-minimal input').iCheck({
+        checkboxClass: 'icheckbox-blue',
+        radioClass: 'iradio-blue',
+        increaseArea: '20%'
+      });
+
+      //表单验证
+      $("#form-singwaapp").Validform({
+          tiptype:4,
+          btnSubmit:"#btn_sub",
+          btnReset:"#btn_reset",
+          datatype:{
+              briefArt:/^[\S\p{Han}\p{P}]{3,100}$/,
+          },
+          // ajaxPost:true,
+          // callback:function(data){
+          //     console.log(data);
+          // },
+      });
+
+
+      //富文本编辑器设置
+      var ue=UE.getEditor('container',{
+          toolbars:[[
+              'undo', //撤销
+              'redo', //重做
+              'bold', //加粗
+              'fontfamily', //字体
+              'fontsize', //字号
+              'justifyleft', //居左对齐
+              'justifyright', //居右对齐
+              'justifycenter', //居中对齐
+              'justifyjustify', //两端对齐
+              'forecolor', //字体颜色
+              'emotion', //表情
+              'spechars', //特殊字符
+              'insertcode', //代码语言
+              'simpleupload', //单图上传
+              'insertimage', //多图上传
+          ]],
+          autoHeightEnabled:false,
+          isShow:true,
+          // initialContent: 'hello world',
+          focus:true,
+          initialFrameHeight:280,
+          initialFrameWidth:900,
+          readonly:false,
+          enableAutoSave:true,
+          saveInterval:500,
+      });
+
 
   });
+
+  //图片提交按钮样式设置
+  function changeStyle() {
+      document.getElementById('filePicker').style.marginLeft='220px';
+      document.getElementById('filePicker').style.marginTop='20px';
+      document.getElementById('startSubmit').style.marginTop='20px';
+  }
+
+  //初始化图片上传
+  $('#startSubmit').click(function(){
+     uploader.upload();
+  });
+
+  //删除预览图片，删除要上传的图片
+  $list.on('click','#del',function () {
+      //获取父元素的ID
+      var ID=$(this).parent().attr('id');
+      //获取队列的ID
+      var queID = uploader.getFile(ID);
+      //删除队列
+      uploader.removeFile(queID);
+      //删除预览图
+      $(this).parent().remove();
+  });
+
+
+
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
