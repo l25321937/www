@@ -5,10 +5,11 @@
  * Date: 2019/3/29
  * Time: 12:25 PM
  */
-namespace  app\api\controller;
-use think\Controller;
+namespace app\api\controller;
 
-class Test extends Controller{
+
+class Test extends Common
+{
     public function index(){
         return [
             'status'=>200,
