@@ -26,6 +26,6 @@ class Test extends Controller{
     }
 
     public function save(){
-        return input('post.');
+        return show(1,'ok',input('post.'),201);
     }
 }
