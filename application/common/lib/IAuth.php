@@ -6,7 +6,7 @@
  * Time: 4:02 PM
  */
 namespace app\common\lib;
-use app\common\lib\Aes;
+
 class IAuth{
     //设置密码
     public static function setPassword($data){
@@ -26,5 +26,26 @@ class IAuth{
         //3.通过aes加密
         $aes_string=(new aes(config('app.aes_key')))->encrypt($string);
         return $aes_string;
+    }
+
+    /*
+     * 检查sign是否正常
+     * @param array $headers 请求头文件
+     * @return boolean
+     */
+    public static function checkSignPass($headers){
+
+        $str = (new aes(config('app.aes_key')))->decrypt($headers['sign']);
+        if(empty($str)){
+            return false;
+        }
+
+        parse_str($str,$arr);
+        if(!is_array($arr) || empty($arr['did']) || empty($arr['version']) ||$arr['did'] != $headers['did'] ){
+            return false;
+        }
+
+        return true;
+
     }
 }

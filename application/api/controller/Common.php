@@ -7,32 +7,52 @@
  */
 
 namespace app\api\controller;
+
 use app\common\lib\IAuth;
 use think\Controller;
 use app\common\lib\Aes;
+use think\Exception;
 
 //API模块公共控制器
 class Common extends Controller{
+    //定义成员属性$headers,方便日后调用header头数据
+    public $headers=[];
     //初始化的方法
     public function _initialize(){
 
         $this->checkRequestAuth();
-        //$this->unlockSign();
+//      $this->testAes();
     }
 
     //校验每次app请求的数据是否合法
     public function checkRequestAuth(){
-        //首先需要获取headers
+        //首先需要获取header头信息
         $headers=request()->header();
-        if(empty($headers['sign'])){}
+//        halt($headers);
+        //判断sign参数是否存在
+        if(empty($headers['sign'])){
+            throw new exception('sign不存在',400);
+        }
+        if(!in_array($headers['app_type'],config('app.app_type'))){
+            throw new exception('系统类型不合法',400);
+        }
+
+
+        if(!IAuth::checkSignPass($headers)){
+            throw new exception('授权码sign校验失败',401);
+        }
+
+        $this->headers = $headers;
 
         //sign 加密需要客户端开发工程师 解密需要服务端开发工程师
     }
 
 
-    //sign解密
-    public function unlockSign($data){
-        $string=(new aes(config('app.aes_key')))->decrypt($data);
-        echo $string;exit;
+    public function testAes(){
+        $headers=request()->header();
+        $string=http_build_query($headers);
+//        dump($headers);
+        $aes_string = (new Aes(config('app.aes_key')))->encrypt($string);
+        echo $aes_string;exit;
     }
 }
