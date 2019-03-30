@@ -34,18 +34,24 @@ class IAuth{
      * @return boolean
      */
     public static function checkSignPass($headers){
-
+        //对header头信息的sign进行aes解密
         $str = (new aes(config('app.aes_key')))->decrypt($headers['sign']);
+        //判断$str是否为空
         if(empty($str)){
             return false;
         }
-
+        //把查询字符串解析到$arr数组中
         parse_str($str,$arr);
+        //判断$arr是否存在，判断数组中是否存在did的数据，判断数组中是否存在version的数据，判断sign解密后的did数据是否和header头信息的did数据相符
         if(!is_array($arr) || empty($arr['did']) || empty($arr['version']) ||$arr['did'] != $headers['did'] ){
             return false;
         }
 
-        return true;
+        //判断请求时间是否超过10分钟
+        if((time()-ceil($arr['time']/1000))>config('app.app_sign_time')){
+            return false;
+        }
 
+        return true;
     }
 }
