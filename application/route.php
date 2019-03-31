@@ -19,13 +19,6 @@ use think\Route;
 //    ],
 //];
 
-//get 获取
-//Route::get('test','api/test/index');
-//put 修改
-//Route::put('test/:id','api/test/update');
-//delete 删除
-//Route::delete('test/:id','api/test/delete');
 
-//对应tp5七种对应规则
-Route::resource('test','api/test');
+
 

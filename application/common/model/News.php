@@ -25,6 +25,7 @@ class News extends Model{
         return $result;
     }
 
+
     public function getCount($where=[]){
         $result = model("news")->where($where)->count();
         return $result;

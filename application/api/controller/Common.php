@@ -41,17 +41,15 @@ class Common extends Controller{
             throw new exception('系统类型不合法',400);
         }
 
-        //判断sign验签是否正确
-        if(!IAuth::checkSignPass($headers)){
-            throw new exception('授权码sign校验失败',401);
+        if(!config('app_debug')){
+            //判断sign验签是否正确
+            if(!IAuth::checkSignPass($headers)){
+                throw new exception('授权码sign校验失败',401);
+            }
+
+            //做sign唯一性支持,设置过期时间为20秒，值为1，名为sign值的缓存
+            Cache::set($headers['sign'],1,config('app.app_sign_cache_time'));
         }
-
-        //做sign唯一性支持,设置过期时间为20秒，值为1，名为sign值的缓存
-        Cache::set($headers['sign'],1,config('app.app_sign_cache_time'));
-
-//        if(){
-//
-//        }
 
         //定义header头数据
         $this->headers = $headers;

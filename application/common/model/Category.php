@@ -14,7 +14,11 @@ class Category extends Model{
 
     }
 
-    //$map 为条件
+    /*
+     * 获取单条的栏目信息
+     * array $map 条件
+     * bool $field 需要查询的字段
+     */
     public function getInfoByMap($map=[],$field=true){
         $result=$this->where($map)->field($field)->find()->hidden(['create_time','update_time']);
         return $result;
@@ -22,13 +26,16 @@ class Category extends Model{
 //        return $result->append(['sex']);
     }
 
-    //获取器的使用
+      //获取器的使用
 //    public function getSexAttr(){
 //        $sex=[1=>'male','0'=>'female','-1'=>'gay'];
 //        return $sex;
 //    }
 
-    public function getListByMap($map=[],$field=true){
-        return $this->where($map)->field($field)->select();
+    /*
+     * 根据条件获取栏目列表
+     */
+    public function getListByMap($map=[],$field='*'){
+        return $this->where($map)->field($field)->select()->toArray();
     }
 }

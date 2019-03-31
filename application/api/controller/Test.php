@@ -18,7 +18,9 @@ class Test extends Common
     }
 
     public function update($id=0){
-        halt(input('put.'));
+        $result=model("Category")->getListByMap();
+
+        halt($result);
 //        return $id;
     }
 

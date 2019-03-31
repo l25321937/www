@@ -14,4 +14,6 @@ return [
     'status_normal' => 1,
     //用户状态待审
     'status_pending'=> 0,
+    //接口数据请求成功
+    'success'=>1,
 ];
