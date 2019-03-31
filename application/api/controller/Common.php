@@ -13,6 +13,7 @@ use think\Controller;
 use app\common\lib\Aes;
 use think\Exception;
 use app\common\lib\Time;
+use think\Cache;
 
 //API模块公共控制器
 class Common extends Controller{
@@ -29,7 +30,7 @@ class Common extends Controller{
     public function checkRequestAuth(){
         //首先需要获取header头信息
         $headers=request()->header();
-//        halt($headers);
+
         //判断sign参数是否存在
         if(empty($headers['sign'])){
             throw new exception('sign不存在',400);
@@ -45,13 +46,20 @@ class Common extends Controller{
             throw new exception('授权码sign校验失败',401);
         }
 
+        //做sign唯一性支持,设置过期时间为20秒，值为1，名为sign值的缓存
+        Cache::set($headers['sign'],1,config('app.app_sign_cache_time'));
+
+//        if(){
+//
+//        }
+
         //定义header头数据
         $this->headers = $headers;
 
         //sign 加密需要客户端开发工程师 解密需要服务端开发工程师
     }
 
-
+    //测试方法，模拟前端发送的数据
     public function testAes(){
 
         $headers = [
