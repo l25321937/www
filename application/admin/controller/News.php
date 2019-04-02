@@ -75,8 +75,20 @@ class News extends Base{
 
         $where['title|small_title|content']=['like','%'.$keyword.'%'];
         $result = model("news")->getNews($where);
+        $record=[];
+        foreach ($result as $key=>$value){
+            $record[$key]['id'] = $value['id'];
+            $record[$key]['title']=$value['title'];
+            $record[$key]['small_title']=$value['small_title'];
+            $record[$key]['catid']=$value['catid'];
+            $record[$key]['image']=$value['image'];
+            $record[$key]['create_time']=$value['create_time'];
+            $record[$key]['update_time']=$value['update_time'];
+            $record[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
+            $record[$key]['option']= "<div class='layui-btn-group'><button class='layui-btn'>编辑</button><button name='del' class='layui-btn' value='".($value['id'])."'>删除</button></div>";
 
-        return json_encode($result);
+        }
+        return json_encode($record);
     }
 
     //新闻硬删除

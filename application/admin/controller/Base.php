@@ -6,13 +6,16 @@
  * Time: 5:10 PM
  */
 namespace app\admin\controller;
+use app\common\lib\ToolsService;
 use think\Controller;
+
 
 class Base extends Controller
 {
     //初始化方法
     public function _initialize()
     {
+        ToolsService::corsOptionsHandle();
        $isLogin = $this->isLogin();
        if(!$isLogin){
            return $this->redirect('login/index');

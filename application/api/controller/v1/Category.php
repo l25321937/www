@@ -5,7 +5,8 @@
  * Date: 2019/3/31
  * Time: 10:38 PM
  */
-namespace app\api\controller;
+namespace app\api\controller\v1;
+use app\api\controller\Common;
 
 class Category extends Common
 {
