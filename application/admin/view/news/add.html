@@ -107,7 +107,7 @@
 
           $.ajax({
               type:'get',
-              url:'http://henrywong02.top/admin/category/getCategoryList',
+              url:'http://www.henrywong02.top/admin/category/getCategoryList',
               success:function (data) {
                       if(!$('.opt')[0]){
                           var result=JSON.parse(data);
@@ -198,6 +198,18 @@
       uploader.removeFile(queID);
       //删除预览图
       $(this).parent().remove();
+  });
+
+  //处理多图片上传名整合
+  $("#btn_sub").on('click',function () {
+      var len=$('#fileList').find($("input[name='pic']")).length;
+      var arr=[];
+      for(var i=0;i<len;i++){
+          arr.push($("input[name='pic']")[0].value);
+      }
+      var images=arr.join(',');
+      $('#fileList').find($("input[name='pic']")).remove();
+      $("#fileList").append('<input type="text" value="'+images+'" name="pic" hidden/>');
   });
 
 

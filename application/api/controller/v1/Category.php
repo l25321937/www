@@ -16,5 +16,4 @@ class Category extends Common
 
         return show(config('code.success'),'ok',$record,200);
     }
-
 }

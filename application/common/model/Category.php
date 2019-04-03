@@ -33,7 +33,7 @@ class Category extends Model{
 //    }
 
     /*
-     * 根据条件获取栏目列表
+     * 获取多条的栏目信息
      */
     public function getListByMap($map=[],$field='*'){
         return $this->where($map)->field($field)->select()->toArray();

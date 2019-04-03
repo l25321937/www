@@ -41,14 +41,14 @@ class News extends Base{
     //获取新闻内容
     public function getNews(){
         $where = ['status'=>['in',[1,0]]];
-        $result = model("news")->getNews($where);
-
+        $result = model("news")->getListNews($where);
+        $arr=[];
         foreach ($result as $key=>$value){
              $arr[$key]['id']=$value['id'];
              $arr[$key]['title']=$value['title'];
              $arr[$key]['small_title']=$value['small_title'];
              $arr[$key]['catid']=$value['catid'];
-             $arr[$key]['image']=$value['image'];
+             $arr[$key]['image']=strpos($value['image'],',') ? explode(',' , $value['image'])[0] : $value['image'];
              $arr[$key]['create_time']=$value['create_time'];
              $arr[$key]['update_time']=$value['update_time'];
              $arr[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
@@ -74,7 +74,7 @@ class News extends Base{
         //关键词的条件
 
         $where['title|small_title|content']=['like','%'.$keyword.'%'];
-        $result = model("news")->getNews($where);
+        $result = model("news")->getListNews($where);
         $record=[];
         foreach ($result as $key=>$value){
             $record[$key]['id'] = $value['id'];
@@ -120,9 +120,7 @@ class News extends Base{
             return json_encode(['code'=>501,'message'=>'参数缺省']);
         }
 
-
         $id = input('id');
-//        halt($data);
         $status = $data==1 ? 0:1 ;
         $res=$this->updateStatus($id,$status);
         if($res){
@@ -130,7 +128,6 @@ class News extends Base{
         }
     }
 
-    //
 
 
 

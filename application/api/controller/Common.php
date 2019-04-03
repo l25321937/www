@@ -22,7 +22,7 @@ class Common extends Controller{
     //初始化的方法
     public function _initialize(){
 
-        $this->checkRequestAuth();
+//        $this->checkRequestAuth();
 //      $this->testAes();
     }
 
@@ -70,5 +70,15 @@ class Common extends Controller{
 //        dump($headers);
         $aes_string = (new Aes(config('app.aes_key')))->encrypt($string);
         echo $aes_string;exit;
+    }
+
+    //获取catId参数返回分类名
+    public function getDealNews(){
+        $catName=model('Category')->getListByMap([],'id,category_name');
+        $arr=[];
+        foreach($catName as $value){
+            $arr[$value['id']]=$value['category_name'];
+        }
+        return $arr;
     }
 }
