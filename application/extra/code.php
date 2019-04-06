@@ -16,4 +16,6 @@ return [
     'status_pending'=> 0,
     //接口数据请求成功
     'success'=>1,
+    //接口数据请求失败
+    'error'=>0
 ];

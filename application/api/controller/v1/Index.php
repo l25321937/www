@@ -8,6 +8,7 @@
 namespace app\api\controller\v1;
 use app\api\controller\Common;
 
+//返回首页页面
 class Index extends Common{
     /*
      * 获取首页头图
@@ -36,7 +37,5 @@ class Index extends Common{
 
         return show(config('code.success'),'ok',$arr,200);
     }
-
-
 
 }

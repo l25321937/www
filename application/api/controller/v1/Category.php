@@ -8,6 +8,7 @@
 namespace app\api\controller\v1;
 use app\api\controller\Common;
 
+//返回栏目页面
 class Category extends Common
 {
     public function index(){

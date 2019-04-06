@@ -52,7 +52,7 @@ class News extends Base{
              $arr[$key]['create_time']=$value['create_time'];
              $arr[$key]['update_time']=$value['update_time'];
              $arr[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
-             $arr[$key]['option']="<div class='layui-btn-group'><button class='layui-btn'>编辑</button><button name='del' class='layui-btn' value='".($value['id'])."'>删除</button></div>";
+             $arr[$key]['option']="<a title='编辑' name='editor' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' data='".($value['id'])."' name='delete' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
         }
         echo json_encode(['data'=>$arr]);
     }
@@ -73,7 +73,7 @@ class News extends Base{
         }
         //关键词的条件
 
-        $where['title|small_title|content']=['like','%'.$keyword.'%'];
+        $where['title|small_title|content|description']=['like','%'.$keyword.'%'];
         $result = model("news")->getListNews($where);
         $record=[];
         foreach ($result as $key=>$value){
@@ -81,12 +81,11 @@ class News extends Base{
             $record[$key]['title']=$value['title'];
             $record[$key]['small_title']=$value['small_title'];
             $record[$key]['catid']=$value['catid'];
-            $record[$key]['image']=$value['image'];
+            $record[$key]['image']=strpos($value['image'],',') ? explode(',' , $value['image'])[0] : $value['image'];
             $record[$key]['create_time']=$value['create_time'];
             $record[$key]['update_time']=$value['update_time'];
             $record[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
-            $record[$key]['option']= "<div class='layui-btn-group'><button class='layui-btn'>编辑</button><button name='del' class='layui-btn' value='".($value['id'])."'>删除</button></div>";
-
+            $record[$key]['option']= "<a title='编辑' class='ml-5'><i class='Hui-iconfont'>&#xe6df;</i></a> <a class='ml-5' name='delete' data='".($value['id'])."'><i class='Hui-iconfont' >&#xe6e2;</i></a>";
         }
         return json_encode($record);
     }
@@ -105,6 +104,9 @@ class News extends Base{
     //新闻软删除
     public function delNew(){
        $id = input('id');
+       if(!$id){
+           return json_encode(['code'=>500,'message'=>'id参数不存在']);
+       }
        //在news表中-1代表删除
        $res=$this->updateStatus($id,-1);
        if($res){
@@ -127,6 +129,8 @@ class News extends Base{
             return json_encode(['code'=>200,'message'=>'更新成功']);
         }
     }
+
+
 
 
 

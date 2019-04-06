@@ -7,7 +7,7 @@
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>文章标题：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <input type="text" class="input-text" datatype="s5-50" nullmsg="标题不能为空" errormsg="请输入5-50位字符的标题" sucmsg="标题可用" value="" placeholder="" id="title" name="title">
+        <input type="text" class="input-text" datatype="title" nullmsg="标题不能为空" errormsg="请输入5-50位字符的标题" sucmsg="标题可用" value="" placeholder="" id="title" name="title">
       </div>
     </div>
     <div class="row cl">
@@ -135,6 +135,7 @@
           btnReset:"#btn_reset",
           datatype:{
               briefArt:/^[\S\p{Han}\p{P}]{3,100}$/,
+              title:/^[\S\p{Han}\p{P}]{3,50}$/
           },
           // ajaxPost:true,
           // callback:function(data){

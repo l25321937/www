@@ -155,8 +155,7 @@
 
         //ajax删除新闻
         //因为表格是动态获取数据，后面的代码中无法获取到创建的节点，因此要用on语句
-        $("body").on("click","button[name='del']",function(){
-            // console.log($(this).val());
+        $("body").on("click","a[name='delete']",function(){
             var obj=$(this);
             layer.open({
                 type:0,
@@ -171,11 +170,11 @@
                     $.ajax({
                         "type":"get",
                         "url":"/admin/news/delNew",
-                        "data":{'id':obj.val()},
+                        "data":{'id':obj.attr('data')},
                         "success":function (data) {
                             if(JSON.parse(data).code==200){
                                 // console.log(obj);
-                                $(obj).parent().parent().parent().remove();
+                                $(obj).parent().parent().remove();
                                 layer.msg('删除成功');
                             }
                         },
@@ -189,6 +188,8 @@
             });
 
         });
+
+
     });
 
     $("body").on('click',"button[name='status']",function(){
