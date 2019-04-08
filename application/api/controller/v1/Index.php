@@ -7,6 +7,7 @@
  */
 namespace app\api\controller\v1;
 use app\api\controller\Common;
+use app\common\lib\exception\ApiException;
 
 //返回首页页面
 class Index extends Common{
@@ -36,6 +37,46 @@ class Index extends Common{
         }
 
         return show(config('code.success'),'ok',$arr,200);
+    }
+
+
+    /*
+     * 客户端初始化接口
+     *
+     *
+     */
+    public function init(){
+
+        //1.检测APP是否需要升级
+        $where=[
+            'app_type'=>'android',
+            'status'=>1,
+        ];
+        $order='version desc';
+        $limit=1;
+        $version = model('Version')->getVersion($where,$order,$limit);
+        if(empty($version)){
+            return new ApiException('error',404);
+        }
+
+        //$version['is_update'] 的值为0时不更新，1为需要更新，2为强制更新
+        if($version['version'] > $this->headers['version']){
+            $version['is_update'] = $version['is_force'] ? 2 : 1;
+        }else{
+            $version['is_update'] = 0;
+        }
+
+        //2.记录用户的基本信息，用于统计
+        $actives=[
+            'version'=> $this->headers['version'],
+            'app_type'=> $this->headers['app_type'],
+            'did'=> $this->headers['did'],
+            'version_code'=>$this->headers['version_code'],
+        ];
+
+        model('AppActive')->addActive($actives);
+
+        return show( config('code.success'),'ok',$version,200);
     }
 
 }

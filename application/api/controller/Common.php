@@ -22,7 +22,7 @@ class Common extends Controller{
     //初始化的方法
     public function _initialize(){
 
-//        $this->checkRequestAuth();
+        $this->checkRequestAuth();
 //      $this->testAes();
     }
 
