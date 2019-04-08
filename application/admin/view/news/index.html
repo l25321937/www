@@ -68,8 +68,6 @@
             }
         });
 
-
-
         //表格设置
         var table=$('#newsTable').DataTable({
             //是否添加搜索功能
@@ -82,8 +80,8 @@
             "iDisplayLength": 10,
             // 是否开启表格左下的信息展示
             "info": true,
-            // 是否排序
-            "ordering": false,
+            // 排序规则
+            "order": [[0,'desc']],
             // ajax请求地址
             "ajax": {
                 "url":'/admin/news/getnews',
@@ -103,15 +101,15 @@
             },
             //表头数据
             "columns": [
-                {"data": "id", "title": "序号"},
-                {"data": "title", "title": "文章标题"},
-                {"data": "small_title", "title": "简略标题"},
-                {"data": "catid", "title": "栏目"},
-                {"data": "image","title": "图片"},
+                {"data": "id", "title": "序号","orderable":false},
+                {"data": "title", "title": "文章标题","orderable":false},
+                {"data": "small_title", "title": "简略标题","orderable":false},
+                {"data": "catid", "title": "栏目","orderable":false},
+                {"data": "image","title": "图片","orderable":false},
                 {"data": "create_time","title": "创建时间"},
-                {"data": "update_time","title": "更新时间"},
-                {"data": "status","title": "状态"},
-                {"data": "option","title": "操作"},
+                {"data": "update_time","title": "更新时间","orderable":false},
+                {"data": "status","title": "状态","orderable":false},
+                {"data": "option","title": "操作","orderable":false},
             ],
             "columnDefs":[
                 {
@@ -133,7 +131,6 @@
                     "targets":3,
                 }
             ],
-
         });
 
         //按条件搜索
@@ -152,6 +149,15 @@
                 },
             });
         } );
+
+        //编辑新闻
+        $("body").on("click","a[name='editor']",function(){
+            var obj=$(this).attr('data');
+            var title='管理员编辑';
+            var url='/admin/news/editor?id='+obj;
+            layer_show(title,url,800,500)
+        });
+
 
         //ajax删除新闻
         //因为表格是动态获取数据，后面的代码中无法获取到创建的节点，因此要用on语句

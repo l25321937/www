@@ -35,7 +35,7 @@ class News extends Model{
      * @param num $page 页数
      * @param num $listRows 每页的总数
      */
-    public function getListNews($where=[],$field=null,$limit=null,$order=[],$page=null,$listRows=null){
+    public function getListNews($where=[],$field=true,$limit=null,$order=[],$page=null,$listRows=null){
         if(is_null($limit)){
             $result = model("news")->field($field)
                 ->where($where)
@@ -60,7 +60,7 @@ class News extends Model{
      * @param string $field 要查询的字段
      *
      */
-    public function getNew($where,$field=null){
+    public function getNew($where=[],$field=null){
         $result = model('news')->where($where)
                             ->field($field)
                             ->find()
@@ -106,8 +106,20 @@ class News extends Model{
      * @param string $field 要自增的字段
      * @param num $num 自增步长
      */
-    public function countInc($where,$field,$num=1){
+    public function countInc($where=[],$field,$num=1){
         $record = $this->where($where)->setInc($field,$num);
+        return $record;
+    }
+
+
+    /*
+     * 更新一条新闻内容
+     * @param arr $where 条件
+     * @param arr $allowField 允许更新的字段,格式如['name','email']
+     * @param arr $data 更新的数据
+     */
+    public function updateNew($where=[],$data){
+        $record=$this->isUpdate(true)->save($data,$where);
         return $record;
     }
 

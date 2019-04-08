@@ -52,7 +52,7 @@ class News extends Base{
              $arr[$key]['create_time']=$value['create_time'];
              $arr[$key]['update_time']=$value['update_time'];
              $arr[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
-             $arr[$key]['option']="<a title='编辑' name='editor' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' data='".($value['id'])."' name='delete' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
+             $arr[$key]['option']="<a title='编辑' name='editor' style='text-decoration:none' data='".($value['id'])."' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a title='删除' data='".($value['id'])."' name='delete' class='ml-5' style='text-decoration: none'><i class='Hui-iconfont'>&#xe6e2;</i></a>";
         }
         echo json_encode(['data'=>$arr]);
     }
@@ -64,15 +64,15 @@ class News extends Base{
         $startTime=input('get.startTime','');
         $endTime=input('get.endTime','');
         $keyword=input('get.keyword');
-
         //栏目分类的条件
         $where=is_null($catId) || $catId==0 ? []:['catid'=>$catId];
         //时间分类的条件
         if($startTime && $endTime){
             $where['create_time']=['between time',[$startTime,$endTime]];
         }
+        //筛选出删除状态的数据
+        $where['status']=['in',[1,0]];
         //关键词的条件
-
         $where['title|small_title|content|description']=['like','%'.$keyword.'%'];
         $result = model("news")->getListNews($where);
         $record=[];
@@ -85,7 +85,7 @@ class News extends Base{
             $record[$key]['create_time']=$value['create_time'];
             $record[$key]['update_time']=$value['update_time'];
             $record[$key]['status']= ($value['status']==1)?" <button class='layui-btn layui-btn-primary layui-btn-xs' name='status' value='".$value['status']."' data='".($value['id'])."'>已发布</button>":"<button class='layui-btn layui-btn-xs layui-btn-normal' name='status' data='".($value['id'])."' value='".$value['status']."'>待审核</button>";
-            $record[$key]['option']= "<a title='编辑' class='ml-5'><i class='Hui-iconfont'>&#xe6df;</i></a> <a class='ml-5' name='delete' data='".($value['id'])."'><i class='Hui-iconfont' >&#xe6e2;</i></a>";
+            $record[$key]['option']= "<a title='编辑' name='editor' style='text-decoration:none' data='".($value['id'])."' class='ml-5' style='text-decoration:none'><i class='Hui-iconfont'>&#xe6df;</i></a> <a class='ml-5' name='delete' data='".($value['id'])."'><i class='Hui-iconfont' >&#xe6e2;</i></a>";
         }
         return json_encode($record);
     }
@@ -128,6 +128,53 @@ class News extends Base{
         if($res){
             return json_encode(['code'=>200,'message'=>'更新成功']);
         }
+    }
+
+    //新闻编辑
+    public function editor(){
+        if(request()->isPost()){
+            $id=input('post.id');
+            $data['title']=input('post.title');
+            $data['small_title']=input('post.small_title');
+            $data['catid']=input('post.catid');
+            $data['image']=input('post.image');
+            $data['content']=input('post.content');
+            $data['description']=input('post.description');
+            $data['is_position']=input('post.is_position');
+            $data['is_head_figure']=input('post.is_head_figure');
+            $data['is_allowcomments']=input('post.is_allowcomments');
+
+            $where=[
+                'id'=>$id,
+            ];
+
+            $result=model('News')->updateNew($where,$data);
+
+            if(!$result){
+                return json_encode(['code'=>500,'message'=>'更新失败']);
+            }
+
+            return json_encode(['code'=>200,'message'=>'更新成功']);
+
+        }else{
+            $id=input('get.id');
+            $newMap=[
+                'id'=>$id,
+                'status'=>['in',[1,0]],
+            ];
+            $field='id,title,small_title,catid,image,content,description,is_position,is_head_figure,is_allowcomments';
+            $newInfo=model('News')->getNew($newMap,$field);
+            $catid=$newInfo['catid'];
+            $category_name=model('Category')->getInfoByMap(['id'=>$catid,'status'=>1],'category_name');
+            $this->assign($category_name); //分配被选中新闻的分类，模板直接{$category_name}来取
+            $this->assign($newInfo); //分配被选中新闻的信息集合，模板直接{$title}来取
+            $catInfos=model('Category')->getListByMap(['status'=>1,'id'=>['neq',$catid]]);
+            return $this->fetch('',[
+                'catInfos'=>$catInfos,
+            ]);
+        }
+
+
     }
 
 

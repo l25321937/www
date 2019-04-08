@@ -1,0 +1,210 @@
+{include file="public/_meta" /}
+<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader-0.1.5/dist/webuploader.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/layui/css/layui.css" />
+<form class="form form-horizontal" id="form-singwaapp" method="post" action="{:url('/admin/news/editor')}">
+    <input type="text" value={$id} name="id"  hidden/>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>文章标题：</label>
+        <div class="formControls col-xs-8 col-sm-8">
+            <input type="text" class="input-text" value={$title} placeholder="" id="title" name="title" datatype="title" errormsg="请输入5-50位字符的标题">
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>简略标题：</label>
+        <div class="formControls col-xs-8 col-sm-8">
+            <input type="text" class="input-text" value={$small_title} placeholder="" id="small_title" name="small_title" datatype="small_title" errormsg="请输入5-50位字符的标题">
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>分类栏目：</label>
+        <div class="formControls col-xs-8 col-sm-8"> <span class="select-box">
+				<select name="catid" class="select" id="catid">
+                    <option value={$catid}>{$category_name}</option>
+                    {volist name="catInfos" id="vo"}
+                      <option value={$vo.id}>{$vo.category_name}</option>
+                    {/volist}
+                </select>
+				</span> </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">文章摘要：</label>
+        <div class="formControls col-xs-8 col-sm-8">
+            <textarea name="description"  class="textarea" ignore="ignore" datatype="briefArt" errormsg="请输入5-50位的字符">{$description}</textarea>
+            <p class="textarea-numberbar">
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">允许评论：</label>
+        <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+            <div class="check-box">
+                {if condition="$is_allowcomments eq 1"}
+                    <input type="checkbox"  name="is_allowcomments" value="1" checked/>
+                {else/}
+                    <input type="checkbox"  name="is_allowcomments" value="1" />
+                {/if}
+                <label for="checkbox-pinglun">&nbsp;</label>
+            </div>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">是否推荐到首页头图：</label>
+        <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+            <div class="check-box">
+                {if condition="$is_head_figure eq 1"}
+                <input type="checkbox" name="is_head_figure" value="1" checked>
+                {else/}
+                <input type="checkbox" name="is_head_figure" value="1">
+                {/if}
+                <label for="checkbox-pinglun">&nbsp;</label>
+            </div>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">是否推荐：</label>
+        <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+            <div class="check-box">
+                {if condition="$is_position eq 1"}
+                <input type="checkbox"  name="is_position" value="1" checked>
+                {else/}
+                <input type="checkbox"  name="is_position" value="1">
+                {/if}
+                <label for="checkbox-pinglun">&nbsp;</label>
+            </div>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3" style="margin-right:17px; ">更新图片：</label>
+        <div id="uploader-demo">
+            <!--用来存放item-->
+            <div id="fileList" class="uploader-list"></div>
+            <div id="filePicker" onclick="changeStyle()" style="float: left;margin-right: 20px;"></div>
+            <div id="startSubmit" class="layui-btn layui-btn-normal" style="float: left;height: 39px;">开始上传</div>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">文章内容：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <script id="container" name="content" type="text/plain" style="width:1000px;height:300px;"></script>
+        </div>
+    </div>
+
+    <div class="row cl">
+        <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2" style='margin-bottom:20px;'>
+            <input class="btn btn-secondary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" id="btn_sub">
+            <input class="btn btn-default radius" type="submit" value="&nbsp;&nbsp;重置&nbsp;&nbsp;" id="btn_reset">
+        </div>
+    </div>
+</form>
+
+{include file="public/_footer" /}
+<script src="__STATIC__/utf8-php/ueditor.config.js"></script>
+<script src="__STATIC__/utf8-php/ueditor.all.min.js"></script>
+<script>var uploader_server="{:url('image/qiniuUpload')}"</script>
+<script type="text/javascript" src="__STATIC__/webuploader-0.1.5/dist/webuploader.js"></script>
+<script type="text/javascript" src="__STATIC__/js/image.js"></script>
+
+<script type="text/javascript">
+    //图片提交按钮样式设置
+    function changeStyle() {
+        document.getElementById('filePicker').style.marginLeft='220px';
+        document.getElementById('filePicker').style.marginTop='20px';
+        document.getElementById('startSubmit').style.marginTop='20px';
+    }
+
+    $(function(){
+        //表单验证
+        $("#form-singwaapp").Validform({
+            tiptype:4,
+            btnSubmit:"#btn_sub",
+            btnReset:"#btn_reset",
+            datatype:{
+                briefArt:/^[\S\p{Han}\p{P}]{5,50}$/,
+                small_title:/^[\S\p{Han}\p{P}]{5,50}$/,
+                title:/^[\S\p{Han}\p{P}]{5,50}$/,
+            },
+            ajaxPost:true,
+            callback:function (data) {
+                var result=JSON.parse(data);
+                if(result.code == '200'){
+                    layer.msg('更新成功!',{icon:1,time:1000});
+                }else{
+                    layer.msg('error!',{icon:1,time:1000});
+                }
+
+                var index = parent.layer.getFrameIndex(window.name);
+                setTimeout(function(){
+                    window.parent.location.reload();
+                    parent.layer.close(index);
+
+                },1000);
+
+            }
+        });
+
+        //单选框样式
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        //初始化图片上传
+        $('#startSubmit').click(function(){
+            uploader.upload();
+        });
+
+        //删除预览图片，删除要上传的图片
+        $list.on('click','#del',function () {
+            //获取父元素的ID
+            var ID=$(this).parent().attr('id');
+            //获取队列的ID
+            var queID = uploader.getFile(ID);
+            //删除队列
+            uploader.removeFile(queID);
+            //删除预览图
+            $(this).parent().remove();
+        });
+
+        //处理多图片上传名整合
+        $("#btn_sub").on('click',function () {
+            var len=$('#fileList').find($("input[name='pic']")).length;
+            var arr=[];
+            for(var i=0;i<len;i++){
+                arr.push($("input[name='pic']")[0].value);
+            }
+            var images=arr.join(',');
+            $('#fileList').find($("input[name='pic']")).remove();
+            $("#fileList").append('<input type="text" value="'+images+'" name="pic" hidden/>');
+        });
+
+        //富文本编辑器设置
+        var ue=UE.getEditor('container',{
+            toolbars:[[
+                'undo', //撤销
+                'redo', //重做
+                'bold', //加粗
+                'fontfamily', //字体
+                'fontsize', //字号
+                'justifyleft', //居左对齐
+                'justifyright', //居右对齐
+                'justifycenter', //居中对齐
+                'justifyjustify', //两端对齐
+                'forecolor', //字体颜色
+                'emotion', //表情
+                'spechars', //特殊字符
+                'insertcode', //代码语言
+                'simpleupload', //单图上传
+                'insertimage', //多图上传
+            ]],
+            autoHeightEnabled:false,
+            isShow:true,
+            initialContent:'{$content}',
+            focus:true,
+            initialFrameHeight:280,
+            initialFrameWidth:560,
+            readonly:false,
+            enableAutoSave:true,
+            saveInterval:500,
+        });
+    });
+</script>

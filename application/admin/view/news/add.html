@@ -13,7 +13,7 @@
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2">简略标题：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <input type="text" class="input-text" value="" ignore="ignore" placeholder="" id="samll_title" name="small_title">
+        <input type="text" class="input-text" datatype="small_title" placeholder="" errormsg="请输入5-50位字符的标题" id="samll_title" name="small_title">
       </div>
     </div>
     <div class="row cl">
@@ -29,7 +29,7 @@
     <div class="row cl">
       <label class="form-label col-xs-4 col-sm-2">文章摘要：</label>
       <div class="formControls col-xs-8 col-sm-9">
-        <textarea name="description"  class="textarea" ignore="ignore" datatype="briefArt" ></textarea>
+        <textarea name="description"  class="textarea"  datatype="briefArt" errormsg="请输入5-50位的字符"></textarea>
         <p class="textarea-numberbar">
       </div>
     </div>
@@ -115,9 +115,7 @@
                               $('#catid').append("<option value='"+(index+1)+"' class='opt'>"+item+"</option>")
                           });
                       }
-
                   }
-                  // console.log($result.result);
           });
 
 
@@ -134,13 +132,17 @@
           btnSubmit:"#btn_sub",
           btnReset:"#btn_reset",
           datatype:{
-              briefArt:/^[\S\p{Han}\p{P}]{3,100}$/,
-              title:/^[\S\p{Han}\p{P}]{3,50}$/
+              briefArt:/^[\S\p{Han}\p{P}]{5,50}$/,
+              small_title:/^[\S\p{Han}\p{P}]{5,50}$/,
+              title:/^[\S\p{Han}\p{P}]{5,50}$/,
           },
-          // ajaxPost:true,
-          // callback:function(data){
-          //     console.log(data);
-          // },
+          ajaxPost:true,
+          callback:function(data){
+              var result=JSON.parse(data);
+              if(result.status == 'y'){
+                  $(location).attr('href', 'http://www.henrywong02.top/admin/news/index');
+              }
+          },
       });
 
 

@@ -20,7 +20,7 @@ class Category extends Model{
      * bool $field 需要查询的字段
      */
     public function getInfoByMap($map=[],$field=true){
-        $result=$this->where($map)->field($field)->find()->hidden(['create_time','update_time']);
+        $result=$this->where($map)->field($field)->find()->hidden(['create_time','update_time'])->toArray();
         return $result;
 //        append的用法
 //        return $result->append(['sex']);
@@ -35,7 +35,7 @@ class Category extends Model{
     /*
      * 获取多条的栏目信息
      */
-    public function getListByMap($map=[],$field='*'){
+    public function getListByMap($map=[],$field=true){
         return $this->where($map)->field($field)->select()->toArray();
     }
 }
