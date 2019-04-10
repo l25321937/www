@@ -26,7 +26,8 @@
         "topthink/think-oracle": "1.*",
         "topthink/think-migration": "1.*",
         "qiniu/php-sdk": "^7.2",
-        "elasticsearch/elasticsearch": "~6.0"
+        "elasticsearch/elasticsearch": "~6.0",
+        "alibabacloud/client": "^1.1"
     },
     "autoload": {
         "psr-4": {

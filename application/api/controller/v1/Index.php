@@ -74,7 +74,11 @@ class Index extends Common{
             'version_code'=>$this->headers['version_code'],
         ];
 
-        model('AppActive')->addActive($actives);
+        try{
+            model('AppActive')->addActive($actives);
+        }catch(\Exception $e){
+            echo $e->getMessage();
+        }
 
         return show( config('code.success'),'ok',$version,200);
     }

@@ -2,8 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Javascript/DOM/.idea/DOM.iml" filepath="$PROJECT_DIR$/../Javascript/DOM/.idea/DOM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Javascript/ECMAscript/.idea/ECMAscript.iml" filepath="$PROJECT_DIR$/../Javascript/ECMAscript/.idea/ECMAscript.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/mooc.iml" filepath="$PROJECT_DIR$/.idea/mooc.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Javascript/Server/myStudy/.idea/myStudy.iml" filepath="$PROJECT_DIR$/../Javascript/Server/myStudy/.idea/myStudy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../面试/.idea/面试.iml" filepath="$PROJECT_DIR$/../面试/.idea/面试.iml" />
     </modules>
   </component>
 </project>
