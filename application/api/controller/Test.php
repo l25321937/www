@@ -8,6 +8,8 @@
 namespace app\api\controller;
 use app\common\lib\exception\ApiException;
 use app\common\lib\Aes;
+use app\common\lib\sendSMS;
+
 class Test extends Common
 {
     public function index(){
@@ -42,4 +44,15 @@ class Test extends Common
         return show(1,'ok',(new Aes(config('app.app_key')))->encrypt(json_encode($data)),201);
 //        return show(1,'ok',input('post.'),201);
     }
+
+    /*
+     * 测试发送短信测试场景
+     *
+     */
+    public function testSendSMS(){
+        $record=sendSMS::getInstance()->sendMessage('18928211756','4');
+        return $record;
+
+    }
+
 }
