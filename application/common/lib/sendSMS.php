@@ -7,6 +7,8 @@
  */
 namespace app\common\lib;
 use yuntongxun\sendSms\SendCode;
+use think\Cache;
+use think\Log;
 class sendSMS{
     /*
      * 声明一个静态变量，要来保存类中的唯一一个实例
@@ -27,6 +29,7 @@ class sendSMS{
      */
     public static function getInstance(){
         if(is_null( self::$_instance)){
+            //保存类中的唯一一个实例
             self::$_instance = new self();
         }
         return self::$_instance;
@@ -46,13 +49,31 @@ class sendSMS{
         //随机生成验证码
         $code=rand(1000,9999);
         //实例化sdk包里的sendCode()
-        $sendSms = new SendCode();
-        $record = $sendSms->sendTemplateSMS($phone,array($code,$time),"1");
-        if($record['success_msg'] !== 'Sendind TemplateSMS success!'){
+        try{
+            $sendSms = new SendCode();
+            $record = $sendSms->sendTemplateSMS($phone,array($code,$time),"1");
+        }catch (\Exception $e){
+            Log::write('set--------'.$e->getMessage());
             return false;
         }
 
+        if($record['success_msg'] !== 'Sendind TemplateSMS success!'){
+            return false;
+        }
+        //容联云通讯已做了验证码过期的限制，后端也去设置验证码的失效时间
+        Cache::set($phone,config('ronglianyun.identify_time'));
         return true;
+   }
+
+   /*
+    * 根据手机号码查询验证码是否存在
+    * @param string $phone 手机号码，如 '18928211756'
+    */
+   public function checkSmsIdentify($phone=0){
+        if(!$phone){
+            return false;
+        }   
+        return Cache::get($phone);
    }
 
 }
